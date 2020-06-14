@@ -184,10 +184,13 @@
           .data(this.linkedListNodesData)
           .enter()
           .append("line")
-          .attr("x1", (d) => d.cx + 100)
+          .attr("x1", (d) => d.cx)
           .attr("x2", (d) => d.cx)
           .attr("y1", (d) => d.cy)
           .attr("y2", (d) => d.cy)
+          .transition().duration(1000)
+          .attr("x1", (d) => d.cx + 100)
+          .attr("x2", (d) => d.cx)
           .style("stroke", "black");
         this.links = d3.selectAll('g.links');
         this.linkedListSVG.selectAll('line').filter((d, i, list) => i === list.length - 1).attr('display', 'none');
