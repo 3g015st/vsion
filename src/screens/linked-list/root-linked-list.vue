@@ -33,31 +33,32 @@
       <a-row class="mt-5 mb-5">
         <div class="bg-gray-100 shadow-md p-5">
           <h1 class="text-xl">Actions</h1>
-          <a-tabs default-active-key="1">
-            <a-tab-pane key="1" tab="Append Node">
-              <a-row>
-                <a-col :span="16">
-                  <a-input v-model="data" placeholder="Enter a number"/>
-                </a-col>
-                <a-col :span="2"/>
-                <a-col :span="6">
-                  <a-button
-                    class="w-full"
-                    type="primary"
-                    @click="appendNode(data, true)"
-                  >
-                    Submit
-                  </a-button>
-                </a-col>
-              </a-row>
-            </a-tab-pane>
-            <a-tab-pane key="2" tab="Tab 2" force-render>
-              Content of Tab Pane 2
-            </a-tab-pane>
-            <a-tab-pane key="3" tab="Tab 3">
-              Content of Tab Pane 3
-            </a-tab-pane>
-          </a-tabs>
+          <a-row>
+            <a-col :span="5">
+              <a-select class="w-full" :default-value="$options.DROPDOWN_SELECT_VALUES[0].value"
+                        @change="handleActionTypeSelection">
+                <a-select-option
+                  v-for="selectItem in $options.DROPDOWN_SELECT_VALUES"
+                  :key="selectItem.value"
+                  :value="selectItem.value"
+                >
+                  {{selectItem.label}}
+                </a-select-option>
+              </a-select>
+            </a-col>
+            <a-col :span="11">
+              <a-input type="number" v-model="data" placeholder="Enter a number"/>
+            </a-col>
+            <a-col :span="6" :offset="2">
+              <a-button
+                class="w-full"
+                type="primary"
+                @click="performActionType(data, true)"
+              >
+                Submit
+              </a-button>
+            </a-col>
+          </a-row>
         </div>
       </a-row>
 
@@ -76,125 +77,16 @@
     }
   }
 
-  // class LinkedList {
-  //   constructor() {
-  //
-  //   }
-  //
-  //   append(data) {
-  //     const node = new Node(data);
-  //     if (!this.head) {
-  //       this.head = node;
-  //       this.tail = node;
-  //       this.size++;
-  //       return `Append : ${data}`;
-  //     }
-  //     this.tail.next = node;
-  //     this.tail = node;
-  //     this.size++;
-  //     return `Append : ${data}`;
-  //   }
-  //
-  //   prepend(data) {
-  //     const node = new Node(data);
-  //     if (this.head) {
-  //       const pastHead = this.head;
-  //       node.next = pastHead;
-  //       this.head = node;
-  //       this.size++;
-  //
-  //       return `Prepend : ${data}`;
-  //     }
-  //     this.head = node;
-  //     this.tail = node;
-  //     this.size++;
-  //     return `Prepend : ${data}`
-  //   }
-  //
-  //   searchByIndex(index) {
-  //     if (index < 0 || index > this.size - 1 || this.size <= 0) {
-  //       return -1;
-  //     } else {
-  //       let current = this.head;
-  //       let i = 0;
-  //       while (current !== null && i < index) {
-  //         current = current.next;
-  //         i++;
-  //       }
-  //       return current.data;
-  //     }
-  //   }
-  //
-  //   searchByValue(value) {
-  //     let i = 0;
-  //     let current = this.head;
-  //     while (current !== null && i < this.size) {
-  //       if (current.data == value) {
-  //         return i;
-  //       }
-  //       current = current.next;
-  //       i++;
-  //     }
-  //   }
-  //
-  //   deleteByIndex(index) {
-  //     if (index < 0 || index > this.size - 1 || this.size <= 0) {
-  //       return -1;
-  //     }
-  //     if (index === 0) {
-  //       let current = this.head;
-  //       this.head = this.head.next;
-  //       this.size--;
-  //       return `Changed head : ${current.data}`;
-  //     }
-  //
-  //     let current = this.head;
-  //     let previous = null;
-  //     let i = 0;
-  //     while (current !== null && i < index) {
-  //       previous = current;
-  //       current = current.next;
-  //       i++;
-  //     }
-  //     if (current !== null) {
-  //       previous.next = current.next;
-  //       this.tail = previous.next.next;
-  //       this.size--;
-  //       return `Removed data : ${current.data}`
-  //     }
-  //   }
-  //
-  //   deleteByValue(value) {
-  //     let i = 0;
-  //     let current = this.head;
-  //     let previous = null;
-  //     while (current !== null && i < this.size) {
-  //       if (current.data === value && i === 0) {
-  //         this.head = this.head.next;
-  //         this.size--;
-  //         return `Delete by value : ${current.data}`;
-  //       } else if (current.data === value && current !== null) {
-  //         previous.next = current.next;
-  //         this.tail = previous.next.next;
-  //         this.size--;
-  //         return `Deleted by value : ${current.data}`
-  //       }
-  //       previous = current;
-  //       current = current.next;
-  //       i++;
-  //     }
-  //   }
-  //
-  //   values() {
-  //     let values = [];
-  //     let current = this.head;
-  //     while (current !== null) {
-  //       values.push(current.data);
-  //       current = current.next;
-  //     }
-  //     return values;
-  //   }
-  // }
+  const DS_VALUE_SELECT_APPEND = {label: 'Append', value: 'append'};
+  const DS_VALUE_SELECT_PREPEND = {label: 'Prepend', value: 'prepend'};
+  const DS_VALUE_SELECT_DELETE_BY_VALUE = {label: 'Delete by value', value: 'delete-by-value'};
+  const DS_VALUE_SELECT_DELETE_BY_INDEX = {label: 'Delete by index', value: 'delete-by-index'};
+  const DROPDOWN_SELECT_VALUES = [
+    DS_VALUE_SELECT_APPEND,
+    DS_VALUE_SELECT_PREPEND,
+    DS_VALUE_SELECT_DELETE_BY_VALUE,
+    DS_VALUE_SELECT_DELETE_BY_INDEX
+  ];
 
   const BASE_LINKED_LIST_LENGTH = 3;
   const LINKED_LIST_NODES_ATTRIBS = {
@@ -211,6 +103,7 @@
     name: "root-linked-list",
     data() {
       return {
+        selectedDropdownValue: DROPDOWN_SELECT_VALUES[0].value,
         isStructureVisible: null,
         svgContainerKey: null,
         nodes: null,
@@ -227,6 +120,9 @@
       }
     },
     computed: {
+      hasLinkedListNodes() {
+        return this.linkedList.size >= 1 ? true : false;
+      },
       structureIcon() {
         return this.isStructureVisible ? 'down' : 'up';
       },
@@ -297,15 +193,115 @@
         this.linkedListSVG.selectAll('line').filter((d, i, list) => i === list.length - 1).attr('display', 'none');
       },
       updateLinkedListSVG() {
-        // Links.
         this.links.data(this.linkedListNodesData).remove();
         this.buildLinks();
-        // Nodes.
         this.nodes.data(this.linkedListNodesData).remove();
         this.buildNodes();
-        // Text.
         this.text.data(this.linkedListNodesData).remove();
         this.buildText();
+      },
+      performActionType(data, isSVGUpdating) {
+        switch (this.selectedDropdownValue) {
+          case DS_VALUE_SELECT_APPEND.value:
+            this.appendNode(data, isSVGUpdating);
+            break;
+          case DS_VALUE_SELECT_PREPEND.value:
+            this.prependNode(data, isSVGUpdating);
+            break;
+          case DS_VALUE_SELECT_DELETE_BY_VALUE.value:
+            this.deleteByValueNode(data, isSVGUpdating);
+            break;
+          case DS_VALUE_SELECT_DELETE_BY_INDEX.value:
+            this.deleteByIndexNode(data, isSVGUpdating);
+            break;
+        }
+      },
+      deleteByIndexNode(index, isSVGUpdating) {
+        if (index < 0 || index > this.linkedList.size - 1 || this.linkedList.size <= 0) {
+          return -1;
+        }
+        if (index === 0) {
+          let current = this.linkedList.head;
+          this.linkedList.head = this.linkedList.head.next;
+          this.linkedList.size--;
+          if (isSVGUpdating) {
+            this.updateLinkedListSVG();
+          }
+          return `Changed head : ${current.data}`;
+        }
+
+        let i = 0;
+        let current = this.linkedList.head;
+        let previous = null;
+        while (current !== null) {
+          if (i == index) {
+            if (previous === null) {
+              this.linkedList.head = current.next;
+            } else if (i == this.linkedList.size - 1) {
+              this.linkedList.tail = previous;
+              this.linkedList.tail.next = null;
+              previous.next = current.next;
+            } else {
+              previous.next = current.next;
+            }
+            this.linkedList.size--;
+            if (this.linkedList.size == 0) this.linkedList.tail = null;
+            if (isSVGUpdating) {
+              this.updateLinkedListSVG();
+            }
+            return true;
+          }
+          previous = current;
+          current = current.next;
+          i++;
+        }
+      },
+      deleteByValueNode(data, isSVGUpdating) {
+        let i = 0;
+        let current = this.linkedList.head;
+        let previous = null;
+        while (current !== null) {
+          if (current.data == data) {
+            if (previous === null) {
+              this.linkedList.head = current.next;
+            } else if (i == this.linkedList.size - 1) {
+              this.linkedList.tail = previous;
+              this.linkedList.tail.next = null;
+              previous.next = current.next;
+            } else {
+              previous.next = current.next;
+            }
+            this.linkedList.size--;
+            if (this.linkedList.size == 0) this.linkedList.tail = null;
+            if (isSVGUpdating) {
+              this.updateLinkedListSVG();
+            }
+            return true;
+          }
+          previous = current;
+          current = current.next;
+          i++;
+        }
+      },
+      prependNode(data, isSVGUpdating) {
+        const node = new Node(data);
+        if (this.linkedList.head) {
+          const pastHead = this.linkedList.head;
+          node.next = pastHead;
+          this.linkedList.head = node;
+          this.linkedList.size++;
+          if (isSVGUpdating) {
+            this.updateLinkedListSVG();
+          }
+          return `Prepend : ${data}`;
+        }
+        this.linkedList.head = node;
+        this.linkedList.tail = node;
+        this.linkedList.size++;
+        if (isSVGUpdating) {
+          this.updateLinkedListSVG();
+        }
+        return `Prepend : ${data}`;
       },
       appendNode(data, isSVGUpdating) {
         const node = new Node(data);
@@ -340,13 +336,17 @@
           const randomNumber = Math.floor(Math.random() * 50) + 1;
           this.appendNode(randomNumber, false);
         }
+      },
+      handleActionTypeSelection(value) {
+        this.selectedDropdownValue = value;
       }
     },
     mounted() {
       this.buildRandomLinkedList();
       this.constructSVG();
       this.plotLinkedList();
-    }
+    },
+    DROPDOWN_SELECT_VALUES: DROPDOWN_SELECT_VALUES
   }
 </script>
 

@@ -3,7 +3,7 @@
     <header class="bg-gray-100 fixed w-full h-16 shadow-md z-50">
       <a-row class="p-5">
         <a-col :span="4">
-          <h1 class="font-sans text-xl">Logo</h1>
+          <h1 class="font-sans text-xl">Vsion</h1>
         </a-col>
         <a-col :span="20">
           <!--          Some additional contents here..-->
