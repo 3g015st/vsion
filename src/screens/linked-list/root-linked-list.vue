@@ -120,6 +120,12 @@
       }
     },
     computed: {
+      isTextFieldEmpty() {
+        if (this.data === null || this.data === undefined || this.data === "") {
+          return true;
+        }
+        return false;
+      },
       hasLinkedListNodes() {
         return this.linkedList.size >= 1 ? true : false;
       },
@@ -204,20 +210,25 @@
         this.buildText();
       },
       performActionType(data, isSVGUpdating) {
-        switch (this.selectedDropdownValue) {
-          case DS_VALUE_SELECT_APPEND.value:
-            this.appendNode(data, isSVGUpdating);
-            break;
-          case DS_VALUE_SELECT_PREPEND.value:
-            this.prependNode(data, isSVGUpdating);
-            break;
-          case DS_VALUE_SELECT_DELETE_BY_VALUE.value:
-            this.deleteByValueNode(data, isSVGUpdating);
-            break;
-          case DS_VALUE_SELECT_DELETE_BY_INDEX.value:
-            this.deleteByIndexNode(data, isSVGUpdating);
-            break;
+        if (this.isTextFieldEmpty) {
+          this.$message.error(`The data is empty.`, 1);
+        } else {
+          switch (this.selectedDropdownValue) {
+            case DS_VALUE_SELECT_APPEND.value:
+              this.appendNode(data, isSVGUpdating);
+              break;
+            case DS_VALUE_SELECT_PREPEND.value:
+              this.prependNode(data, isSVGUpdating);
+              break;
+            case DS_VALUE_SELECT_DELETE_BY_VALUE.value:
+              this.deleteByValueNode(data, isSVGUpdating);
+              break;
+            case DS_VALUE_SELECT_DELETE_BY_INDEX.value:
+              this.deleteByIndexNode(data, isSVGUpdating);
+              break;
+          }
         }
+
       },
       deleteByIndexNode(index, isSVGUpdating) {
         if (index < 0 || index > this.linkedList.size - 1 || this.linkedList.size <= 0) {
