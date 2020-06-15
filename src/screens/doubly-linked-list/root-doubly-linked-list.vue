@@ -26,7 +26,7 @@
           </a-row>
 
           <div v-if="isStructureVisible">
-            <pre>{{linkedList}}</pre>
+            <pre>{{modifiedCircularLinkedList}}</pre>
           </div>
         </div>
       </a-row>
@@ -69,9 +69,11 @@
 
 <script>
   import * as d3 from "d3";
+  import {stringifyCircularJSON} from '@/utils/circular-json-util';
 
-  class Node {
+  class DoublyNode {
     constructor(data) {
+      this.previous = null;
       this.data = data;
       this.next = null;
     }
@@ -120,6 +122,9 @@
       }
     },
     computed: {
+      modifiedCircularLinkedList() {
+        return JSON.parse(stringifyCircularJSON(this.linkedList));
+      },
       isTextFieldEmpty() {
         if (this.data === null || this.data === undefined || this.data === "") {
           return true;
@@ -318,23 +323,19 @@
         return `Prepend : ${data}`;
       },
       appendNode(data, isSVGUpdating) {
-        const node = new Node(data);
+        const node = new DoublyNode(data);
         if (!this.linkedList.head) {
           this.linkedList.head = node;
-          this.linkedList.tail = node;
-          this.linkedList.size++;
-          if (isSVGUpdating) {
-            this.updateLinkedListSVG();
-          }
-          return `Append : ${data}`;
+        } else {
+          node.previous = this.linkedList.tail;
+          this.linkedList.tail.next = node;
         }
-        this.linkedList.tail.next = node;
         this.linkedList.tail = node;
         this.linkedList.size++;
         if (isSVGUpdating) {
           this.updateLinkedListSVG();
         }
-        return `Append : ${data}`;
+        return `Append : ${data}`
       },
       constructSVG() {
         const svg = d3.select('#linkedList').attr('width', 1000).attr('height', 120).attr('overflow-x', 'scroll');

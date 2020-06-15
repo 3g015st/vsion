@@ -109,6 +109,7 @@
         nodes: null,
         links: null,
         text: null,
+        arrows: null,
         simulation: null,
         linkedListSVG: null,
         linkedList: {
@@ -172,7 +173,8 @@
           .attr("class", "text")
           .selectAll("text")
           .data(this.linkedListNodesData)
-          .enter().append("text")
+          .enter()
+          .append("text")
           .attr("id", (d) => d.idText)
           .attr("x", (d) => d.cx - 10)
           .attr("y", (d) => d.cy + 5)
@@ -197,9 +199,30 @@
           .transition().duration(1000)
           .attr("x1", (d) => d.cx + 100)
           .attr("x2", (d) => d.cx)
+          .attr("marker-end", "url(#triangle)")
           .style("stroke", "black");
         this.links = d3.selectAll('g.links');
         this.linkedListSVG.selectAll('line').filter((d, i, list) => i === list.length - 1).attr('display', 'none');
+      },
+      buildArrows() {
+        this.linkedListSVG
+          .append("g")
+          .attr("class", "arrows")
+          .selectAll("arrows")
+          .data(this.linkedListNodesData)
+          .enter()
+          .append("svg:marker")
+          .attr("id", "triangle")
+          .attr("refX", (d) => d.cx - 160)
+          .attr("refY", (d) => d.cy - 44)
+          .attr("markerWidth", 30)
+          .attr("markerHeight", 30)
+          .append("path")
+          .attr("d", "M 0 0 12 6 0 12 3 6")
+          .style("fill", "gray")
+          .transition().duration(1000)
+          .style("fill", "black");
+        this.arrows = d3.selectAll('g.arrows');
       },
       updateLinkedListSVG() {
         this.links.data(this.linkedListNodesData).remove();
@@ -208,6 +231,8 @@
         this.buildNodes();
         this.text.data(this.linkedListNodesData).remove();
         this.buildText();
+        this.arrows.data(this.linkedListNodesData).remove();
+        this.buildArrows();
       },
       performActionType(data, isSVGUpdating) {
         if (this.isTextFieldEmpty) {
@@ -228,7 +253,6 @@
               break;
           }
         }
-
       },
       deleteByIndexNode(index, isSVGUpdating) {
         if (index < 0 || index > this.linkedList.size - 1 || this.linkedList.size <= 0) {
@@ -344,6 +368,7 @@
         this.buildLinks();
         this.buildNodes();
         this.buildText();
+        this.buildArrows();
       },
       buildRandomLinkedList() {
         for (let x = 0; x < BASE_LINKED_LIST_LENGTH; x++) {
