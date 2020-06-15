@@ -1,6 +1,6 @@
-import {ROUTE_LINKED_LIST, ROUTE_SETTINGS} from "@/router/route-constants";
+import {ROUTE_LINKED_LIST, ROUTE_DOUBLY_LINKED_LIST} from "@/router/route-constants";
 
-export const NAV_MENU_ONE_KEY = 'DataStructurres';
+export const NAV_MENU_ONE_KEY = 'DataStructures';
 export const NAV_MENU_ONE = {
   key: NAV_MENU_ONE_KEY,
   icon: 'bar-chart',
@@ -12,9 +12,9 @@ export const NAV_MENU_ONE = {
       icon: 'unordered-list'
     },
     {
-      key: ROUTE_SETTINGS,
-      title: ROUTE_SETTINGS,
-      icon: null
+      key: ROUTE_DOUBLY_LINKED_LIST,
+      title: ROUTE_DOUBLY_LINKED_LIST,
+      icon: 'ordered-list'
     }
   ]
 };

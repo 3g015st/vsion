@@ -1,8 +1,8 @@
 import Dashboard from "@/screens/dashboard/root-dashboard";
 import LinkedList from "@/screens/linked-list/root-linked-list";
-import Settings from "@/screens/settings/root-settings";
+import DoublyLinkedList from "@/screens/doubly-linked-list/root-doubly-linked-list";
 
-import {ROUTE_DASHBOARD, ROUTE_LINKED_LIST, ROUTE_SETTINGS} from './route-constants';
+import {ROUTE_DASHBOARD, ROUTE_LINKED_LIST, ROUTE_DOUBLY_LINKED_LIST} from './route-constants';
 
 export default [
   {
@@ -17,9 +17,9 @@ export default [
         component: LinkedList
       },
       {
-        path: '/dashboard/settings',
-        name: ROUTE_SETTINGS,
-        component: Settings
+        path: '/dashboard/doubly-linked-list',
+        name: ROUTE_DOUBLY_LINKED_LIST,
+        component: DoublyLinkedList
       }
     ]
   }
